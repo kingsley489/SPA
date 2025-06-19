@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics & Math Intensive Study Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .expanded .expandable-content {
+            max-height: 300px; /* Adjust as needed for content */
+        }
+        .completed-task {
+            text-decoration: line-through;
+            color: #6b7280; /* gray-500 */
+        }
+        .concept-card {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .concept-card:hover {
+            transform: translateY(-2px);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <header class="bg-blue-700 text-white py-12 md:py-16 shadow-md">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">Physics & Math Intensive Study Tracker</h1>
+            <p class="text-lg md:text-xl text-blue-100 mb-6">Your roadmap to mastering core concepts before the week ends!</p>
+            <div class="bg-blue-800 inline-block px-6 py-3 rounded-full shadow-lg">
+                <span class="text-xl font-semibold">Progress: <span id="progress-counter">0</span>/<span id="total-tasks">0</span> Concepts Completed</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section class="mb-12 bg-white p-8 rounded-lg shadow-xl border border-blue-200">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">🎯 Today's Focus & Goals</h2>
+            <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">
+                Use this section to outline your personal goals, key concepts to focus on, and any specific challenges you plan to tackle today. This will help you stay organized and motivated!
+            </p>
+            <div class="max-w-4xl mx-auto">
+                <label for="today-date" class="block text-lg font-semibold text-gray-700 mb-2">Date:</label>
+                <input type="date" id="today-date" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 mb-4">
+
+                <label for="daily-goals" class="block text-lg font-semibold text-gray-700 mb-2">My Goals for Today:</label>
+                <textarea id="daily-goals" rows="6" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Master Kinematics 2D, complete 5 projectile problems, review FBDs for inclined planes."></textarea>
+            </div>
+        </section>
+
+        <section class="mb-12 bg-white p-8 rounded-lg shadow-xl border border-blue-200">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">✨ LLM Study Tools ✨</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">
+                Leverage AI to get quick explanations or generate quiz questions on any physics or math concept you're studying!
+            </p>
+
+            <div class="max-w-4xl mx-auto mb-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Concept Explainer</h3>
+                <label for="concept-input" class="block text-lg font-semibold text-gray-700 mb-2">Enter a concept (e.g., "Newton's Third Law", "Power Rule"):</label>
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <input type="text" id="concept-input" class="flex-grow p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 'Work-Energy Theorem'">
+                    <button id="explain-concept-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300">
+                        Explain Concept ✨
+                    </button>
+                </div>
+                <div id="explanation-output" class="bg-gray-100 p-4 rounded-md border border-gray-200 min-h-[100px] flex items-center justify-center text-gray-600">
+                    Your explanation will appear here.
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Quiz Question Generator</h3>
+                <label for="quiz-topic-input" class="block text-lg font-semibold text-gray-700 mb-2">Enter a topic for a quiz question (e.g., "Projectile Motion", "Vector Addition"):</label>
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <input type="text" id="quiz-topic-input" class="flex-grow p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 'Conservation of Momentum'">
+                    <button id="generate-quiz-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300">
+                        Generate Quiz Question ✨
+                    </button>
+                </div>
+                <div id="quiz-output" class="bg-gray-100 p-4 rounded-md border border-gray-200 min-h-[100px] flex items-center justify-center text-gray-600">
+                    Your quiz question will appear here.
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">Phase 1: Foundational Math 🧮</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">
+                This phase focuses on solidifying the essential mathematical tools required for Physics 101. Master these before moving on, as they are the building blocks for understanding physics problems.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto" id="math-concepts">
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Algebraic Manipulation & Equation Solving</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Review isolating variables, working with exponents, and solving basic equation systems. Focus on rearranging formulas like $F=ma$ to solve for any variable.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Algebra Basics" (solving equations, rearranging formulas)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Trigonometry: SOH CAH TOA</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Understand sine, cosine, and tangent in right-angle triangles. Learn to find missing sides and angles. This is fundamental for vector components.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Basic trigonometry" (right triangles, inverse trig functions)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Vectors: Definition & Components</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Grasp what a vector is (magnitude + direction) and how to break a vector into its X and Y components using trigonometry (vector resolution).</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Vectors" (Math & Physics sections)</li>
+                            <li>YouTube: Michel van Biezen (search "vector components")</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Vectors: Addition & Subtraction</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Learn graphical (head-to-tail) and component methods for vector addition and subtraction. The component method is crucial for physics problems.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Vectors"</li>
+                            <li>YouTube: Michel van Biezen (search "vector addition components")</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">Phase 2: Core Physics 101 Concepts 🔬</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">
+                This phase applies your mathematical tools to fundamental physics principles. Focus on understanding the concepts and, most importantly, practicing problem-solving for each topic.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto" id="physics-concepts">
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Kinematics: 1D Motion & Equations</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Understand displacement, velocity, and acceleration in one dimension. Master the 5 main kinematic (SUVAT) equations and when to apply them. Practice free-fall problems.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Physics Classroom: "Kinematic Equations"</li>
+                            <li>Khan Academy: "One-dimensional motion"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Kinematics: 2D Motion (Projectile)</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Apply vector concepts to projectile motion. Understand the independence of horizontal and vertical motion. Practice full projectile problems.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Physics Classroom: "2-D Kinematics"</li>
+                            <li>Khan Academy: "Two-dimensional motion"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Newton's Laws: Free-Body Diagrams</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Learn to draw accurate Free-Body Diagrams (FBDs) to represent all forces acting on an object. This is a critical skill for applying Newton's Laws.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Physics Classroom: "Newton's Laws" (FBD section)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Newton's Laws: Applying F=ma</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Understand how to use FBDs to set up equations ($\Sigma F_x = ma_x$, $\Sigma F_y = ma_y$) and solve problems involving forces, mass, and acceleration. Practice resolving forces into components.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Forces and Newton's Laws of Motion"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Work, Energy & Power: Concepts</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Understand Kinetic Energy ($\frac{1}{2}mv^2$), Potential Energy (Gravitational: $mgh$; Spring: $\frac{1}{2}kx^2$), Work ($W = Fd \cos\theta$), and Power.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Work and energy"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Work, Energy & Power: Conservation</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Learn the powerful principle of Conservation of Mechanical Energy and the Work-Energy Theorem. Practice problems where energy transforms.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Work and energy"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Momentum & Impulse (if applicable)</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Understand linear momentum ($p=mv$), impulse ($J = F\Delta t = \Delta p$), and the Conservation of Momentum, especially for collision problems.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Momentum"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">Phase 3: Introductory Calculus (Optional) ➕</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">
+                If your Physics 101 course is calculus-based, this section covers the fundamental calculus concepts and their application in physics, particularly kinematics.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto" id="calculus-concepts">
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Calculus: Basic Derivatives</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Understand derivatives as the rate of change or slope. Learn the power rule. Apply to finding instantaneous velocity from position and acceleration from velocity.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Derivatives: definition and basic rules"</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="concept-card p-6">
+                    <label class="flex items-center cursor-pointer mb-3">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" onchange="toggleCompletion(this)">
+                        <span class="ml-3 text-lg font-semibold text-gray-700">Calculus: Basic Integrals</span>
+                    </label>
+                    <button onclick="toggleDetails(this)" class="text-blue-500 hover:text-blue-700 text-sm flex items-center mt-2">
+                        <span>Details</span>
+                        <span class="ml-1 transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="expandable-content mt-2 text-gray-600 text-sm">
+                        <p>Understand integrals as the area under a curve or accumulation. Learn the reverse power rule. Apply to finding displacement from velocity and change in velocity from acceleration.</p>
+                        <p class="mt-2 font-semibold">Resources:</p>
+                        <ul class="list-disc list-inside">
+                            <li>Khan Academy: "Antiderivatives and indefinite integrals"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center">
+        <div class="container mx-auto px-6">
+            <p>&copy; 2024 Physics & Math Study Tracker. All rights reserved.</p>
+            <p class="text-sm text-gray-500 mt-2">Designed to help you master core concepts rapidly.</p>
+        </div>
+    </footer>
+
+    <script>
+        const STORAGE_KEY = 'physicsStudyTrackerState';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadState(); // Load state on page load
+            updateProgress(); // Update progress bar based on loaded state
+
+            // Set today's date in the date input if not already set by loaded state
+            if (!document.getElementById('today-date').value) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                document.getElementById('today-date').value = `${yyyy}-${mm}-${dd}`;
+            }
+
+            // Event listeners for saving state
+            document.querySelectorAll('.concept-card input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', saveState);
+            });
+            document.getElementById('daily-goals').addEventListener('input', saveState);
+            document.getElementById('today-date').addEventListener('change', saveState);
+
+            // Add event listeners for LLM tools
+            document.getElementById('explain-concept-btn').addEventListener('click', explainConcept);
+            document.getElementById('generate-quiz-btn').addEventListener('click', generateQuizQuestion);
+        });
+
+        function toggleCompletion(checkbox) {
+            const labelSpan = checkbox.nextElementSibling;
+            if (checkbox.checked) {
+                labelSpan.classList.add('completed-task');
+            } else {
+                labelSpan.classList.remove('completed-task');
+            }
+            updateProgress();
+            saveState(); // Save state immediately after toggling
+        }
+
+        function toggleDetails(button) {
+            const parentCard = button.closest('.concept-card');
+            const expandableContent = parentCard.querySelector('.expandable-content');
+            parentCard.classList.toggle('expanded');
+            const buttonSpan = button.querySelector('span:last-child');
+            if (parentCard.classList.contains('expanded')) {
+                buttonSpan.style.transform = 'rotate(180deg)';
+            } else {
+                buttonSpan.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function updateProgress() {
+            const allCheckboxes = document.querySelectorAll('.concept-card input[type="checkbox"]');
+            const completedCheckboxes = document.querySelectorAll('.concept-card input[type="checkbox"]:checked');
+            const totalTasks = allCheckboxes.length;
+            const completedTasks = completedCheckboxes.length;
+
+            document.getElementById('progress-counter').textContent = completedTasks;
+            document.getElementById('total-tasks').textContent = totalTasks;
+        }
+
+        function saveState() {
+            const state = {
+                completedConcepts: [],
+                dailyGoals: document.getElementById('daily-goals').value,
+                todayDate: document.getElementById('today-date').value,
+                explanationOutput: document.getElementById('explanation-output').innerHTML,
+                quizOutput: document.getElementById('quiz-output').innerHTML
+            };
+
+            document.querySelectorAll('.concept-card input[type="checkbox"]').forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    // Use a unique identifier for each checkbox (e.g., its index or a data-attribute if available)
+                    // For simplicity, we'll assign a data-index if not present
+                    if (!checkbox.dataset.index) {
+                        checkbox.dataset.index = index;
+                    }
+                    state.completedConcepts.push(checkbox.dataset.index);
+                }
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            console.log('State saved:', state);
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(STORAGE_KEY);
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                console.log('State loaded:', state);
+
+                // Restore daily goals and date
+                document.getElementById('daily-goals').value = state.dailyGoals || '';
+                document.getElementById('today-date').value = state.todayDate || '';
+
+                // Restore LLM outputs
+                document.getElementById('explanation-output').innerHTML = state.explanationOutput || '<p class="text-gray-600">Your explanation will appear here.</p>';
+                document.getElementById('quiz-output').innerHTML = state.quizOutput || '<p class="text-gray-600">Your quiz question will appear here.</p>';
+
+                // Restore checkbox states
+                const allCheckboxes = document.querySelectorAll('.concept-card input[type="checkbox"]');
+                allCheckboxes.forEach((checkbox, index) => {
+                    // Assign a data-index if not already present for reliable identification
+                    if (!checkbox.dataset.index) {
+                        checkbox.dataset.index = index;
+                    }
+                    if (state.completedConcepts && state.completedConcepts.includes(checkbox.dataset.index)) {
+                        checkbox.checked = true;
+                        checkbox.nextElementSibling.classList.add('completed-task');
+                    } else {
+                        checkbox.checked = false;
+                        checkbox.nextElementSibling.classList.remove('completed-task');
+                    }
+                });
+            }
+        }
+
+
+        async function explainConcept() {
+            const conceptInput = document.getElementById('concept-input').value.trim();
+            const explanationOutput = document.getElementById('explanation-output');
+
+            if (!conceptInput) {
+                explanationOutput.innerHTML = '<p class="text-red-500">Please enter a concept to explain.</p>';
+                return;
+            }
+
+            explanationOutput.innerHTML = '<p class="text-blue-600 animate-pulse">Generating explanation... ✨</p>';
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: `Explain the physics or math concept "${conceptInput}" in a simple, easy-to-understand way, suitable for a Physics 101 student. Keep it concise.` }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    explanationOutput.innerHTML = `<p>${text}</p>`;
+                } else {
+                    explanationOutput.innerHTML = '<p class="text-red-500">Could not generate explanation. Please try again.</p>';
+                }
+            } catch (error) {
+                console.error('Error explaining concept:', error);
+                explanationOutput.innerHTML = '<p class="text-red-500">Error generating explanation. Please check your network or try again later.</p>';
+            } finally {
+                saveState(); // Save state after LLM output is updated
+            }
+        }
+
+        async function generateQuizQuestion() {
+            const topicInput = document.getElementById('quiz-topic-input').value.trim();
+            const quizOutput = document.getElementById('quiz-output');
+
+            if (!topicInput) {
+                quizOutput.innerHTML = '<p class="text-red-500">Please enter a topic for a quiz question.</p>';
+                return;
+            }
+
+            quizOutput.innerHTML = '<p class="text-blue-600 animate-pulse">Generating quiz question... ✨</p>';
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: `Generate a single, clear, multiple-choice quiz question about the physics or math topic "${topicInput}". Provide 4 options (A, B, C, D) and clearly indicate the correct answer. The question should be suitable for a Physics 101 student.` }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    quizOutput.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`; // Replace newlines with <br> for HTML display
+                } else {
+                    quizOutput.innerHTML = '<p class="text-red-500">Could not generate quiz question. Please try again.</p>';
+                }
+            } catch (error) {
+                console.error('Error generating quiz question:', error);
+                quizOutput.innerHTML = '<p class="text-red-500">Error generating quiz question. Please check your network or try again later.</p>';
+            } finally {
+                saveState(); // Save state after LLM output is updated
+            }
+        }
+    </script>
+</body>
+</html>
